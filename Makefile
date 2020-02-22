@@ -1,4 +1,4 @@
-.PHONY: build get-dahlia
+.PHONY: build get-dahlia deploy
 
 DAHLIA:=../dahlia/dahlia/js/target/scala-2.13/dahlia-fastopt.js
 
@@ -17,3 +17,6 @@ static/js/bundle.js: custom-js/bundle.js
 get-dahlia:
 	# Assumes that the dahlia JavaScript file was generated.
 	cp $(DAHLIA) custom-js/
+
+deploy: build
+	rsync -azvhP public/ coursewww:/users/rn359/coursewww/capra.cs.cornell.edu/htdocs/dahlia
