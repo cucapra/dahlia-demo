@@ -1,4 +1,4 @@
-const { Dahlia } = require('../../dahlia/dahlia/js/target/scala-2.13/dahlia-fastopt.js');
+const { Dahlia } = require('./dahlia-fastopt.js');
 const { setupAll } = require('./examples.js');
 
 const ace = require('brace');
