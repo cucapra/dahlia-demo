@@ -13,7 +13,7 @@ const editor = ace.edit("editor");
 editor.session.setMode("ace/mode/ocaml");
 editor.session.setUseWrapMode("ace/mode/c_cpp");
 editor.setOptions({
-  fontSize: 18,
+  fontSize: 14,
   showPrintMargin: false,
 })
 
@@ -26,7 +26,7 @@ result.setOptions({
   highlightActiveLine: false,
   highlightGutterLine: false,
   showGutter: false,
-  fontSize:14,
+  fontSize:12,
   showPrintMargin: false,
 });
 
