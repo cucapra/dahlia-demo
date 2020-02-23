@@ -12,6 +12,6 @@
     "markdown-it": "^10.0.0"
   },
   "scripts": {
-    "build": "./node_modules/.bin/browserify index.js -o bundle.js"
+    "build": "./node_modules/.bin/browserify index.js -o bundle.js && cp bundle.js ../static/js"
   }
 }
