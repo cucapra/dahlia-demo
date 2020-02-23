@@ -64,7 +64,7 @@ a[0] := 1.0;`,
     a single time step.`
   },
   {
-    name: "Parallel Loops",
+    name: "Parallel Loops (1)",
     code:`
 let a: float[10 bank 2];
 let b: float[10 bank 2];
@@ -77,6 +77,38 @@ for (let i = 0 .. 10) unroll 2 {
     dependencies in the parallel part of the computation. The program creates
     two processing elements (PEs) that execute on disjoint parts of \`a\` and
     \`b\`.
+    `
+  },
+  {
+    name: "Parallel Loops (2)",
+    code:`
+let a: float[10];
+let b: float[10 bank 2];
+for (let i = 0 .. 10) unroll 2 {
+  a[i] := b[i] * 2.0;
+}`,
+    explanation: `
+    Unrolled \`for\` loops require parallel access to elements of a memory. If a
+    memory does not provide sufficient banks, the FPGA design will multiplex
+    access to memory--the design will require more area without improving
+    latency. Dahlia rejects such programs.
+    `
+  },
+  {
+    name: "Combine blocks",
+    code:`
+let a: float[10 bank 2];
+let sum = 0.0;
+for (let i = 0 .. 10) unroll 2 {
+  let x = a[i] * 2.0;
+} combine {
+  sum += x;
+}`,
+    explanation: `
+    Accelerator often need to reduce the results of parallel loop iterations.
+    Unrolled \`for\` loops can optionally specify a \`combine\` block to
+    perform reductions across parallel iterations. Variables bounds within
+    the parallel parts of the loop are available within the \`combine\` block.
     `
   },
 ]
@@ -98,7 +130,7 @@ function validateExample(example) {
 // Setup button for an example. Update function cleans up the UI for the new
 // example.
 function addExample(example, updateFunc) {
-  const buttonClasses = ["btn", "btn-secondary"];
+  const buttonClasses = ["btn", "btn-default"];
   // The document element for the button:
   const el = document.createElement('BUTTON')
   for (let cls of buttonClasses) {
@@ -111,6 +143,8 @@ function addExample(example, updateFunc) {
     updateFunc(example.code.trim());
     document.getElementById('explain').innerHTML =
       md.render(example.explanation.trim());
+    document.getElementById('example-name').innerHTML =
+      example.name;
   }
 
   document.getElementById('examples').appendChild(el);
