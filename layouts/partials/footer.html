@@ -30,6 +30,9 @@
           {{ end }}
         </ul>
         <p class="credits copyright text-muted">
+        </p>
+        <!-- Please don't remove this, keep my open source work credited :) -->
+        <p class="credits theme-by text-muted">
           &nbsp;&copy;
           {{ if .Site.Author.name }}
             {{ if .Site.Author.website }}
@@ -42,11 +45,16 @@
           {{ if .Site.Params.since }}
             {{ .Site.Params.since }}
           {{ end }}
-        </p>
-        <!-- Please don't remove this, keep my open source work credited :) -->
-        <p class="credits theme-by text-muted">
-          {{ i18n "poweredBy" . | safeHTML }}
-          {{ if $.GitInfo }}&nbsp;&bull;&nbsp;[<a href="{{ .Site.Params.commit }}{{ .GitInfo.Hash }}">{{ substr .GitInfo.Hash 0 8 }}</a>]{{ end }}
+          &nbsp;&bull;
+          Theme
+          <a href="https://github.com/halogenica/beautifulhugo">
+          Beautiful Hugo
+          </a>
+          &nbsp;&bull;
+          Logo by
+          <a href="https://www.flaticon.com/authors/freepik">
+          freepik
+          </a>
         </p>
       </div>
     </div>
@@ -54,8 +62,6 @@
 </footer>
 
 {{- if .Site.Params.selfHosted -}}
-<script src="{{ "js/katex.min.js" | absURL }}"></script>
-<script src="{{ "js/auto-render.min.js" | absURL }}"></script>
 <script src="{{ "js/jquery.min.js" | absURL }}"></script>
 <script src="{{ "js/bootstrap.min.js" | absURL }}"></script>
 {{- else -}}

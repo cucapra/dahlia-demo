@@ -23,7 +23,7 @@ unsafe= true
   logo = "img/dahlia-logo.png" # Expecting square dimensions
   favicon = "img/dahlia-logo.png"
   dateFormat = "January 2, 2006"
-  useHLJS = true
+  useHLJS = false
   showRelatedPosts = true
   since="2020"
 

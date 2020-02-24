@@ -29,6 +29,26 @@ a[0] := 1.0;
     the program is accepeted.
     `,
   },
+{
+    name: "Read Capabilities",
+    code:`
+let a: float{2}[10];
+{
+  let x = a[0];
+  let y = a[0]; // Allowed: Reads from same location.
+}
+---
+{
+  a[0] := 1.0;
+  a[0] := 2.0; // Disallowed: Writes to same location
+}`,
+    explanation: `
+    Reads from the same memory address locations can be *faned-out* in hardware.
+    Dahlia acquires a *read capability* for every memory read in a logical time
+    step and does not consume affine memories after the first read. However,
+    writes to the same memory location are not allowed.
+  `
+  },
   {
     name: "Memory Ports",
     code:`
@@ -130,7 +150,7 @@ function validateExample(example) {
 // Setup button for an example. Update function cleans up the UI for the new
 // example.
 function addExample(example, updateFunc) {
-  const buttonClasses = ["btn", "btn-default"];
+  const buttonClasses = ["btn", "btn-default", "btn-block"];
   // The document element for the button:
   const el = document.createElement('BUTTON')
   for (let cls of buttonClasses) {
@@ -147,15 +167,34 @@ function addExample(example, updateFunc) {
       example.name;
   }
 
-  document.getElementById('examples').appendChild(el);
+  const td = document.createElement('TD');
+  td.appendChild(el);
+  return td;
+}
+
+// Create a new horizontal button group
+function newGroup() {
+  let el = document.createElement('TR');
+  return el;
 }
 
 function setupAll(updateFunc) {
-  for (ex of examples) {
+  let fragment = document.createDocumentFragment();
+  let curGroup = newGroup();
+  let groupSize = 0;
+  for (let i = 0; i < examples.length; i++) {
+    const ex = examples[i];
     if (validateExample(ex)) {
-      addExample(ex, updateFunc);
+      curGroup.appendChild(addExample(ex, updateFunc));
+      groupSize += 1;
+    }
+    if (groupSize === 2 || i === examples.length - 1) {
+      fragment.appendChild(curGroup);
+      curGroup = newGroup();
+      groupSize = 0;
     }
   }
+  document.getElementById('examples').appendChild(fragment);
 }
 
 exports.setupAll = setupAll;

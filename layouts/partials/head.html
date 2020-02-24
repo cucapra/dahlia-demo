@@ -28,7 +28,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 <!-- Site Title, Description, Author, and Favicon -->
 {{- with ($.Scratch.Get "Title") }}
+  {{- if eq $.Site.Title . }}
+  <title>{{ $.Site.Title }} | Demo </title>
+  {{- else }}
   <title>{{ $.Site.Title }} | {{ . }} </title>
+  {{- end }}
 {{- end }}
 {{- with ($.Scratch.Get "Description") }}
   <meta name="description" content="{{ . }}">
@@ -46,7 +50,6 @@
   <link rel="alternate" href="{{ "index.xml" | absLangURL }}" type="application/rss+xml" title="{{ .Site.Title }}">
 
   <link rel="stylesheet" href="{{ "css/katex.min.css" | absURL }}" />
-  <link rel="stylesheet" href="{{ "css/editor.css" | absURL }}" />
   <link rel="stylesheet" href="{{ "fontawesome/css/all.css" | absURL }}" />
   <link rel="stylesheet" href="{{ "css/bootstrap.min.css" | absURL }}" />
 
@@ -81,6 +84,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe.min.css" integrity="sha384-h/L2W9KefUClHWaty3SLE5F/qvc4djlyR4qY3NUV5HGQBBW7stbcfff1+I/vmsHh" crossorigin="anonymous">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/default-skin/default-skin.min.css" integrity="sha384-iD0dNku6PYSIQLyfTOpB06F2KCZJAKLOThS5HRe8b3ibhdEQ6eKsFf/EeFxdOt5R" crossorigin="anonymous">
   {{- end -}}
+  <link rel="stylesheet" href="{{ "css/editor.css" | absURL }}" />
 
 {{- partial "head_custom.html" . }}
 {{ template "_internal/google_analytics_async.html" . }}
