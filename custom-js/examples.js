@@ -21,7 +21,7 @@ a[0] := 1.0;
 let a: float[10];
 a[0];
 ---
-a[0] := 1.0;
+a[1];
     `,
     explanation: `
     A \`---\` in Dahlia creates a *logical time step*. Resources can be
@@ -39,14 +39,35 @@ let a: float{2}[10];
 }
 ---
 {
+  let x = a[0];
+  let y = a[1]; // Disallowed: Reads from different locations.
+}`,
+    explanation: `
+    Reads from the same memory address locations can be *fanned-out* in hardware.
+    Dahlia acquires a *read capability* for every memory read in a logical time
+    step and does not consume affine memories after the first read. However,
+    reads from different memory locations are only permitted with the availability of 
+    ports.
+  `
+  },
+  {
+    name: "Write Capabilities",
+    code:`
+let a: float{2}[10];
+{
+  let x = a[0];
+  let y = a[0]; // Allowed: Reads from same location.
+}
+---
+{
   a[0] := 1.0;
   a[0] := 2.0; // Disallowed: Writes to same location
 }`,
     explanation: `
-    Reads from the same memory address locations can be *faned-out* in hardware.
     Dahlia acquires a *read capability* for every memory read in a logical time
-    step and does not consume affine memories after the first read. However,
-    writes to the same memory location are not allowed.
+    step but does not consume affine memories after the first read. However,
+    *write capability* is consumed with one write. Therefore, writing 
+    to the same memory location is not allowed.
   `
   },
   {
@@ -54,7 +75,7 @@ let a: float{2}[10];
     code:`
 let a: float{2}[10];
 a[0];
-a[0] := 1.0;`,
+a[1] := 1.0;`,
     explanation: `
     FPGA memories can also support multiple *ports* in order to service multiple
     reads and writes every cycle. Dahlia supports reasoning about multi-ported
