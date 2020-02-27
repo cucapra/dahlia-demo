@@ -13,22 +13,23 @@ Dahlia is built and maintained by the [CAPRA][] research group at Cornell Univer
 
 Dahlia is a typed imperative programming language for designing FPGA accelerators.
 It targets High-Level Synthesis toolchains such as [Vivado HLS][vivado-hls]
-as it compilation target. Dahlia aims to reduce the pitfalls of HLS programming,
-from simple interface issues which are not checked by vendor tools to complex
-optimization pitfalls.
+as its compilation target. Dahlia aims to reduce pitfalls of HLS programming,
+from simple interface issues which are not checked by vendor tools to complex 
+and unsuspecting behavior due to interaction between different optimizations.
 
 [vivado-hls]: https://www.xilinx.com/products/design-tools/vivado/integration/esl-design.html
 
 #### What is predictable accelerator design?
 
-High performance HLS designs require parameter tuning such as loop unrolling
-and pipelining, memory banking etc. These parameters have subtle interactions
-with each and the constraints of FPGA programming.
+High performance HLS designs require tuning hardware optimizations such as 
+loop unrolling, pipelining, memory banking etc. These parameters have subtle 
+interactions with each other and design constraints of FPGA programming.
 
 For example, when a parallel loop tries to read five values from a memory that
 can only service two reads per cycle, the HLS compiler will *multiplex* the
 reads and spread them across multiple cycles. This will result in a design that
-consumes more area for the parallel loop body without improving the performance.
+consumes more area for the parallel loop body with suboptimal improvement in
+performance.
 
 This is unpredictable design--FPGA designs should improve latency when loop
 bodies run in parallel. Dahlia statically reasons about memory use and rejects
