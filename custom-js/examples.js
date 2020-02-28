@@ -29,46 +29,33 @@ a[1];
     the program is accepeted.
     `,
   },
-{
-    name: "Read Capabilities",
+  {
+    name: "Capabilities (1)",
     code:`
 let a: float{2}[10];
 {
   let x = a[0];
   let y = a[0]; // Allowed: Reads from same location.
-}
----
-{
-  let x = a[0];
-  let y = a[1]; // Disallowed: Reads from different locations.
 }`,
     explanation: `
     Reads from the same memory address locations can be *fanned-out* in hardware.
     Dahlia acquires a *read capability* for every memory read in a logical time
     step and does not consume affine memories after the first read. However,
-    reads from different memory locations are only permitted with the availability of 
+    reads from different memory locations are only permitted with the availability of
     ports.
   `
   },
   {
-    name: "Write Capabilities",
+    name: "Capabilities (2)",
     code:`
 let a: float{2}[10];
-{
-  let x = a[0];
-  let y = a[0]; // Allowed: Reads from same location.
-}
----
 {
   a[0] := 1.0;
   a[0] := 2.0; // Disallowed: Writes to same location
 }`,
-    explanation: `
-    Dahlia acquires a *read capability* for every memory read in a logical time
-    step but does not consume affine memories after the first read. However,
-    *write capability* is consumed with one write. Therefore, writing 
-    to the same memory location is not allowed.
-  `
+    explanation: `Writes to the same memory address cannot occur in hardware.
+    *Write capabilities* in Dahlia are affine--writing to a location consumes
+    the capability.`
   },
   {
     name: "Memory Ports",
@@ -152,6 +139,70 @@ for (let i = 0 .. 10) unroll 2 {
     the parallel parts of the loop are available within the \`combine\` block.
     `
   },
+  {
+    name: "Views: Shrink",
+    code:`
+let a: float[8 bank 4];
+view a_sh = a[_: bank 2]; // Type is: float[8 bank 2]
+for (let i = 0 .. 8) unroll 2 {
+  let x = a_sh[i]; // Ok: Banking factor == unrolling.
+  ---
+  let y = a[i] * 2.0; // Disallowed since it requires transformations.
+}`,
+    explanation: `Memory views are Dahlia's mechanism to reason about disjoint
+    accesses with complex memory access patterns. A core design philosphy with
+    Dahlia is that complexity in the generated hardware should be evident in
+    the source program. A *shrink* view represents the hardware cost of
+    multiplexing multiple banks to act as one logical unit.
+    `
+  },
+  {
+    name: "Views: Aligned Suffix",
+    code:`
+let a: float[8 bank 2];
+for (let i = 0..2) {
+  view a_su = a[2*i:];
+  for (let j = 0 .. 4) unroll 2 {
+    let x = a_su[j]; // Same as a[2*i + j]
+  }
+}`,
+    explanation: `Aligned views in Dahlia represent access pattern that aligned
+    on *bank boundaries*, i.e., if the original array has *k* banks, elements
+    are accesses from *0*-*k*, then *k+1*-*2k* and so on. This restriction allows
+    Dahlia to prove that there is no additional hardware required to implement
+    the access pattern.`
+  },
+  {
+    name: "Views: Rotation Suffix",
+    code:`
+let a: float[8 bank 2];
+for (let i = 0..2) {
+  view a_su = a[i*i!:];
+  for (let j = 0 .. 4) unroll 2 {
+    let x = a_su[j]; // Same as a[i*i + j]
+  }
+}`,
+    explanation: `Rotation suffixes represent access patterns that don't access
+    elements at *bank boundaries* but still guarantee that no bank conflicts
+    occur in the same cycle. For example, this program will read *4* indices
+    starting from *i*\**i*, each of which is guaranteed to be in a different bank.`
+  },
+  {
+    name: "Views: Split",
+    code:`
+let a: float[8 bank 4];
+split a_sp = a[by 2]; // 2 blocks of a
+for (let i = 0..2) unroll 2 {
+  for (let j = 0 .. 4) unroll 2 {
+    let x = a_sp[i][j] * 2.0;
+  }
+}`,
+    explanation: `Split views represent memory access patterns that can be parallelized
+    at multiple levels. A common case is *block-based* parallelization where
+    an memory is partitioned into several block, each of which can perform their
+    computation independently while also allowing parallelism within the computation
+    of each block.`
+  }
 ]
 
 
