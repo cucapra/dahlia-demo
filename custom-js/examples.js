@@ -32,11 +32,10 @@ a[1];
   {
     name: "Capabilities (1)",
     code:`
-let a: float{2}[10];
-{
-  let x = a[0];
-  let y = a[0]; // Allowed: Reads from same location.
-}`,
+let a: float[10];
+let x = a[0];
+let y = a[0]; // Allowed: Reads from same location.
+`,
     explanation: `
     Reads from the same memory address locations can be *fanned-out* in hardware.
     Dahlia acquires a *read capability* for every memory read in a logical time
@@ -48,11 +47,10 @@ let a: float{2}[10];
   {
     name: "Capabilities (2)",
     code:`
-let a: float{2}[10];
-{
-  a[0] := 1.0;
-  a[0] := 2.0; // Disallowed: Writes to same location
-}`,
+let a: float[10];
+a[0] := 1.0;
+a[0] := 2.0; // Disallowed: Writes to same location
+`,
     explanation: `Writes to the same memory address cannot occur in hardware.
     *Write capabilities* in Dahlia are affine--writing to a location consumes
     the capability.`
@@ -97,11 +95,11 @@ a[0] := 1.0;`,
 let a: float[10 bank 2];
 let b: float[10 bank 2];
 for (let i = 0 .. 10) unroll 2 {
-  a[i] := b[i] * 2.0;
+  a[i] := b[i] * 2.0; // fails on chaning a[i] to b[i+1]
 }`,
     explanation: `
     In Dahlia, \`for\` loops can be used to parallelize computation. These
-    loop support *DOALL* parallelism and therefore disallow any interloop
+    loops support *DOALL* parallelism and therefore disallow any interloop
     dependencies in the parallel part of the computation. The program creates
     two processing elements (PEs) that execute on disjoint parts of \`a\` and
     \`b\`.
@@ -133,9 +131,9 @@ for (let i = 0 .. 10) unroll 2 {
   sum += x;
 }`,
     explanation: `
-    Accelerator often need to reduce the results of parallel loop iterations.
+    Accelerators often need to reduce the results of parallel loop iterations.
     Unrolled \`for\` loops can optionally specify a \`combine\` block to
-    perform reductions across parallel iterations. Variables bounds within
+    perform reductions across parallel iterations. Variables bound within
     the parallel parts of the loop are available within the \`combine\` block.
     `
   },
@@ -150,7 +148,7 @@ for (let i = 0 .. 8) unroll 2 {
   let y = a[i] * 2.0; // Disallowed since it requires transformations.
 }`,
     explanation: `Memory views are Dahlia's mechanism to reason about disjoint
-    accesses with complex memory access patterns. A core design philosphy with
+    accesses with complex memory access patterns. A core design philosophy with
     Dahlia is that complexity in the generated hardware should be evident in
     the source program. A *shrink* view represents the hardware cost of
     multiplexing multiple banks to act as one logical unit.
