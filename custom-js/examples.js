@@ -95,7 +95,7 @@ a[0] := 1.0;`,
 let a: float[10 bank 2];
 let b: float[10 bank 2];
 for (let i = 0 .. 10) unroll 2 {
-  a[i] := b[i] * 2.0; // fails on chaning a[i] to b[i+1]
+  a[i] := b[i] * 2.0; // fails on changing a[i] to b[i+1]
 }`,
     explanation: `
     In Dahlia, \`for\` loops can be used to parallelize computation. These
@@ -158,9 +158,9 @@ for (let i = 0 .. 8) unroll 2 {
     name: "Views: Aligned Suffix",
     code:`
 let a: float[8 bank 2];
-for (let i = 0..2) {
+for (let i = 0..4) {
   view a_su = a[2*i:];
-  for (let j = 0 .. 4) unroll 2 {
+  for (let j = 0..2) unroll 2 {
     let x = a_su[j]; // Same as a[2*i + j]
   }
 }`,
@@ -174,9 +174,9 @@ for (let i = 0..2) {
     name: "Views: Rotation Suffix",
     code:`
 let a: float[8 bank 2];
-for (let i = 0..2) {
+for (let i = 0..4) {
   view a_su = a[i*i!:];
-  for (let j = 0 .. 4) unroll 2 {
+  for (let j = 0..2) unroll 2 {
     let x = a_su[j]; // Same as a[i*i + j]
   }
 }`,
@@ -197,9 +197,10 @@ for (let i = 0..2) unroll 2 {
 }`,
     explanation: `Split views represent memory access patterns that can be parallelized
     at multiple levels. A common case is *block-based* parallelization where
-    an memory is partitioned into several block, each of which can perform their
-    computation independently while also allowing parallelism within the computation
-    of each block.`
+    a memory is partitioned into several blocks, each of which can perform their
+    computation independently (*inter-block* parallelization) while also
+    allowing parallelism within the computation of each block (*intra-block*
+    parallelization).`
   }
 ]
 

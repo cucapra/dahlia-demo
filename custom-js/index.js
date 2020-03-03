@@ -2,7 +2,6 @@ const { Dahlia } = require('./dahlia-fastopt.js');
 const { setupAll } = require('./examples.js');
 
 const ace = require('brace');
-require('brace/mode/ocaml')
 require('brace/mode/c_cpp')
 require('brace/theme/monokai');
 
@@ -10,7 +9,7 @@ const Range = ace.acequire('ace/range').Range;
 
 // input container
 const editor = ace.edit("editor");
-editor.session.setMode("ace/mode/ocaml");
+editor.session.setMode("ace/mode/c_cpp");
 editor.session.setUseWrapMode("ace/mode/c_cpp");
 editor.setOptions({
   fontSize: 14,
