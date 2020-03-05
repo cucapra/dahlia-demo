@@ -86,5 +86,7 @@
   {{- end -}}
   <link rel="stylesheet" href="{{ "css/editor.css" | absURL }}" />
 
+  <base href="{{ .Site.BaseURL }}">
+
 {{- partial "head_custom.html" . }}
 {{ template "_internal/google_analytics_async.html" . }}

@@ -57,6 +57,11 @@ unsafe= true
     weight = 20
 
 [[menu.main]]
+    name = "Research"
+    url = "page/research/"
+    weight = 25
+
+[[menu.main]]
     name = "Code"
     url = "https://github.com/cucapra/dahlia"
     weight = 30
