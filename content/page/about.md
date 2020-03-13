@@ -3,10 +3,6 @@ title: About
 comments: false
 ---
 
-Dahlia is built and maintained by the [CAPRA][] research group at Cornell University.
-
-[capra]: https://capra.cs.cornell.edu
-
 ### Frequently Asked Questions
 
 #### What is Dahlia?
@@ -60,16 +56,22 @@ complex transformations.
 
 [affine]: https://en.wikipedia.org/wiki/Substructural_type_system#Affine_type_systems
 
-### Contributors
+----------
 
-- [Rachit Nigam](https://rachitnigam.com)
-- Samuel Thomas
-- [Adrian Sampson](http://adriansampson.net)
-- Yuwei Yi
-- Zhijing Li
-- Kenneth Fang
-- Sachille Atapattu
+### Projects
 
-### Alumni
+Dahlia is built and maintained by the [CAPRA][] research group at Cornell
+University.
 
-- Ted Bauer
+As a part of the Dahlia project, have built and open-sourced several research
+artifacts:
+
+- [Dahlia](https://github.com/cucapra/dahlia): A compiler from Dahlia to HLS C.
+- [Dahlia Evaluation](https://github.com/cucapra/dahlia-evaluation): Large scale evaluation of the Dahlia compiler.
+- [FuTIL](https://github.com/cucapra/futil): An Intermediary Representation (IR) for HLS.
+- [Polyphemus](https://github.com/cucapra/polyphemus): A framework for managing large scale, distributed experiments with AWS F1.
+
+
+[capra]: https://capra.cs.cornell.edu
+
+
